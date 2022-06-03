@@ -2,6 +2,7 @@ work/
 output_files/
 db/
 incremental_db/
+simulation/
 
 *.wlf
 *.bak
