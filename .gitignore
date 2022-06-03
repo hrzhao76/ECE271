@@ -1,0 +1,7 @@
+work/
+output_files/
+db/
+incremental_db/
+
+*.wlf
+*.bak
