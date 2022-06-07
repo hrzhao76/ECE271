@@ -34,8 +34,8 @@ module DE1_SoC_testbench();
 	initial begin
 		SW[6:1] = 1'b0;
 		for(i = 0; i <16; i++) begin
-			SW[9:7] = i; #10;
-			SW[0] = i;	#10;
+			{SW[9:7], SW[0]} = i; #10;
+			//SW[0] = i;	#10;
 		end
 	end
 endmodule
