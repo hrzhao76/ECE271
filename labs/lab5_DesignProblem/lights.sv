@@ -5,47 +5,31 @@ module lights (clk, reset, sw, out);
 	
 	// State variables
 	// 3 leds in total, l, m, r. RL: R->L. LR: L->R
-	enum { Calm_lr, Calm_m, RL_r, RL_m, RL_l, LR_l, LR_m, LR_r } ps, ns;	
+	enum { Calm_lr, L_l, L_m,  L_r } ps, ns;	
 	
 	// Next State logic
 	always_comb begin
 		case (ps)
-		Calm_lr:		if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_r;
-						else if (~sw[0] & sw[1])		ns = LR_l;
+		Calm_lr:		if (~sw[1] & ~sw[0])			ns = L_m;		// 00
+						else if (~sw[1] & sw[0])		ns = L_r;		// 01
+						else if (sw[1] & ~sw[0])		ns = L_l;		// 10
 						else							ns = Calm_lr;	// Stay in its ps 
 						
-		Calm_m:			if (~sw[0] & ~sw[1])			ns = Calm_lr;
-						else if (sw[0] & ~sw[1])		ns = RL_l;
-						else if (~sw[0] & sw[1])		ns = LR_r;
-						else							ns = Calm_m;
+		L_m:			if (~sw[1] & ~sw[0])			ns = Calm_lr;	// 00
+						else if (~sw[1] & sw[0])		ns = L_l;		// 01
+						else if (sw[1] & ~sw[0])		ns = L_r;		// 10
+						else							ns = L_m;		// Stay in its ps 					
+				
+		L_l:			if (~sw[1] & ~sw[0])			ns = Calm_lr;	// 00
+						else if (~sw[1] & sw[0])		ns = L_r;		// 01
+						else if (sw[1] & ~sw[0])		ns = L_m;		// 10
+						else							ns = L_l;		// Stay in its ps 	
+
+		L_r:			if (~sw[1] & ~sw[0])			ns = Calm_lr;	// 00
+						else if (~sw[1] & sw[0])		ns = L_m;		// 01
+						else if (sw[1] & ~sw[0])		ns = L_l;		// 10
+						else							ns = L_r;		// Stay in its ps 	
 						
-		RL_r:			if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_m;
-						else if (~sw[0] & sw[1])		ns = LR_l;		
-						else							ns = RL_r;						
-		RL_m:			if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_l;
-						else if (~sw[0] & sw[1])		ns = LR_l;
-						else							ns = RL_m;						
-		RL_l:			if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_r;
-						else if (~sw[0] & sw[1])		ns = LR_l;
-						else							ns = RL_l;
-						
-		
-		LR_l:			if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_r;
-						else if (~sw[0] & sw[1])		ns = LR_m;
-						else							ns = LR_l;
-		LR_m:			if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_r;
-						else if (~sw[0] & sw[1])		ns = LR_r;
-						else							ns = LR_m;
-		LR_r:			if (~sw[0] & ~sw[1])			ns = Calm_m;
-						else if (sw[0] & ~sw[1])		ns = RL_r;
-						else if (~sw[0] & sw[1])		ns = LR_l;
-						else							ns = LR_r;
 		endcase
 	end
 
@@ -55,35 +39,23 @@ module lights (clk, reset, sw, out);
 	always_comb begin
 		case (ps)
 			Calm_lr:		out[2] = 1;
-			Calm_m:			out[2] = 0;
-			RL_r:			out[2] = 0;
-			RL_m:			out[2] = 0;
-			RL_l:			out[2] = 1;
-			LR_l:			out[2] = 1;
-			LR_m:			out[2] = 0;
-			LR_r:			out[2] = 0;
+			L_m:			out[2] = 0;
+			L_l:			out[2] = 1;
+			L_r:			out[2] = 0;
 		endcase
 			
 		case (ps)
 			Calm_lr:		out[1] = 0;
-			Calm_m:			out[1] = 1;
-			RL_r:			out[1] = 0;
-			RL_m:			out[1] = 1;
-			RL_l:			out[1] = 0;
-			LR_l:			out[1] = 0;
-			LR_m:			out[1] = 1;
-			LR_r:			out[1] = 0;
+			L_m:			out[1] = 1;
+			L_l:			out[1] = 0;
+			L_r:			out[1] = 0;
 		endcase
 		
 		case (ps)
 			Calm_lr:		out[0] = 1;
-			Calm_m:			out[0] = 0;
-			RL_r:			out[0] = 1;
-			RL_m:			out[0] = 0;
-			RL_l:			out[0] = 0;
-			LR_l:			out[0] = 0;
-			LR_m:			out[0] = 0;
-			LR_r:			out[0] = 1;
+			L_m:			out[0] = 0;
+			L_l:			out[0] = 0;
+			L_r:			out[0] = 1;
 		endcase
 	end
 	// DFFs
