@@ -4,7 +4,7 @@ vlib work
 # Compile Verilog
 #     All Verilog files that are part of this design should have
 #     their own "vlog" line below.
-//vlog "./DE1_SoC.sv"
+vlog "./DE1_SoC.sv"
 vlog "./lights.sv"
 vlog "./clock_divider.sv"
 
@@ -16,7 +16,7 @@ vsim -voptargs="+acc" -t 1ps -lib work lights_testbench
 # Source the wave do file
 #     This should be the file that sets up the signal window for
 #     the module you are testing.
-do DE1_SoC_wave.do
+do test_lights_wave.do
 
 # Set the window types
 view wave
